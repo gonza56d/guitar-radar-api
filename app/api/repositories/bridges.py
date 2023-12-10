@@ -1,16 +1,21 @@
-from sqlalchemy import insert, select
+from dataclasses import dataclass
+
+from sqlalchemy import insert, Table
 
 from app.api.orm.guitars import bridge_table
+from app.api.repositories.base import SQLRepository
 from app.core.commands.bridges import CreateBridgeCommand
 from app.core.models.guitars import Bridge
 from app.core.repositories.bridges import BridgeRepository
 
 
-class BridgeSQLRepository(BridgeRepository):
+@dataclass(kw_only=True)
+class BridgeSQLRepository(BridgeRepository, SQLRepository):
 
-    table = bridge_table
+    @property
+    def table(self) -> Table:
+        return bridge_table
 
     def create_bridge(self, bridge: CreateBridgeCommand) -> Bridge:
-        insert_id = insert(self.table).values(**bridge.__dict__).returning(self.table.c.id)
-        bridge_result = select(self.table).where(self.table.id == insert_id)
-        # TODO: https://stackoverflow.com/questions/75107329/how-to-return-an-object-after-insert-with-sqlalchemy
+        stmt = insert(self.table).values(**bridge.__dict__)
+        cursor_result = self._execute(stmt)
