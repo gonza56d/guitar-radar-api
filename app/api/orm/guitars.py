@@ -1,6 +1,13 @@
 from uuid import uuid4
 
-from sqlalchemy import Column, Enum, ForeignKey, Integer, String, Table
+from sqlalchemy import (
+    Column,
+    Enum,
+    ForeignKey,
+    Integer,
+    String,
+    Table
+)
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import registry, relationship
 
