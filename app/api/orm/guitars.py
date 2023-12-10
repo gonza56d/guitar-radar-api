@@ -1,8 +1,10 @@
 from uuid import uuid4
 
-from sqlalchemy import Column, ForeignKey, Integer, String, Table
+from sqlalchemy import Column, Enum, ForeignKey, Integer, String, Table
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import registry
+from sqlalchemy.orm import registry, relationship
+
+from app.core.models import guitars
 
 
 mapper_registry = registry()
@@ -38,28 +40,40 @@ color_table = Table(
     'colors',
     mapper_registry.metadata,
     get_id_column(),
-    get_name_column()
+    get_name_column(),
+    Column(
+        'type',
+        Enum(
+            'FIXED', 'HEADLESS', 'VINTAGE_TREMOLO', 'TWO_POINT_TREMOLO', 'FOUR_POINT_TREMOLO',
+            'FLOATING_TREMOLO', 'TUNE_O_MATIC',
+            name='bridge_type',
+            create_type=False
+        )
+    )
 )
 
 
-user_table = Table(
-    'users',
+bridge_table = Table(
+    'bridges',
     mapper_registry.metadata,
-    #body: Body,
-    #neck: Neck,
-    #construction_method: ConstructionType,
-    Column('number_of_strings', Integer),
-    # nut_type: NutType,
-    # is_nut_compensated: bool,
-    # number_of_frets: int,
-    # frets_type: FretType,
-    # frets_material: FretMaterialType | None = None,
-    # headstock_type: HeadstockType,
-    # tuners: Tuner,
-    # bridge: Bridge,
-    # bridge_pickup: Pickup | None = None,
-    # middle_pickup: Pickup | None = None,
-    # neck_pickup: Pickup | None = None,
-    # has_piezo: bool = False,
-    # controls: list[ControlType],
+    *get_branded_component_columns(),
+
 )
+
+bridge_color_table = Table(
+    'bridges_colors',
+    mapper_registry.metadata,
+    Column('color_id', ForeignKey('colors.id'), primary_key=True),
+    Column('bridge_id', ForeignKey('bridges.id'), primary_key=True),
+)
+
+mapper_registry.map_imperatively(guitars.Brand, brand_table)
+mapper_registry.map_imperatively(
+    guitars.Bridge,
+    bridge_table,
+    properties={
+        'brand': relationship(guitars.Brand),
+        'colors': relationship(guitars.Color, secondary=bridge_color_table)
+    }
+)
+mapper_registry.map_imperatively(guitars.Color, color_table)
