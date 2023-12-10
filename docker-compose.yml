@@ -9,4 +9,4 @@ services:
       - .:/app
     ports:
       - '8000:8000'
-    command: uvicorn api.main:api --reload --host 0.0.0.0
+    command: uvicorn app.api.main:api --reload --host 0.0.0.0
