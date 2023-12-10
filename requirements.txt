@@ -4,3 +4,4 @@ uvicorn==0.24.0.post1
 SQLAlchemy==2.0.23
 pymongo==4.6.1
 psycopg2==2.9.9
+pymessagebus==1.2.3
