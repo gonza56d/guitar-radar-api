@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from uuid import UUID
 
 from .enums import *
@@ -26,7 +26,7 @@ class BrandedComponent:
     brand: Brand
     name: str
     year_of_introduction: int | None = None
-    color: Color | None = None
+    colors: list[Color] = field(default=list)
 
 
 @dataclass(kw_only=True)
@@ -112,9 +112,9 @@ class Guitar(BrandedComponent):
     controls: list[ControlType]
 
     @property
-    def color(self) -> Color:
+    def colors(self) -> list[Color]:
         """Overriden. Returns the color of the body of the guitar."""
-        return self.body.color
+        return self.body.colors
 
     @property
     def hardware_color_str(self) -> str:
@@ -123,9 +123,8 @@ class Guitar(BrandedComponent):
 
         Example: 'Gold, Black.'
         """
-        return ', '.join(
-            component.color.name for component in self.hardware
-        )
+        hardware_colors = {color.value for color in {element.colors for element in self.hardware}}
+        return ', '.join(hardware_colors)
 
     @property
     def hardware(self) -> list[BrandedComponent]:
