@@ -8,24 +8,17 @@ class Status(Enum):
     DEGRADED = 'DEGRADED', 'Guitar Radar API is working but some dependencies are down.'
 
 
-@dataclass(kw_only=True)
-class SQLHealthStatus:
+class DependencyStatus:
 
     connected: bool
     implementation: str
 
 
-@dataclass(kw_only=True)
-class DocumentHealthStatus:
-
-    connected: bool
-    implementation: str
-
-
+@dataclass
 class OverallStatus:
 
-    status: str
-    status_description: str
+    status: str | None = None
+    status_description: str | None = None
 
     def __init__(self, status_option: Status):
         self.status = status_option.value[0]
@@ -35,6 +28,15 @@ class OverallStatus:
 @dataclass(kw_only=True)
 class HealthStatus:
 
-    sql_db_status: SQLHealthStatus
-    document_db_status: DocumentHealthStatus
-    overall_status: OverallStatus
+    sql_db_status: DependencyStatus
+    document_db_status: DependencyStatus
+    overall_status: OverallStatus | None = None
+
+    def __post_init__(self):
+        statuses = [self.sql_db_status, self.document_db_status]
+        status = Status.OUTAGE
+        if any(statuses):
+            status = Status.DEGRADED
+        if all(statuses):
+            status = Status.HEALTHY
+        self.overall_status = OverallStatus(status)
