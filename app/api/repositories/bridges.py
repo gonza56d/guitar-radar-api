@@ -9,7 +9,7 @@ from app.core.models.guitars import Bridge
 from app.core.repositories.bridges import BridgeRepository
 
 
-@dataclass(kw_only=True)
+@dataclass
 class BridgeSQLRepository(BridgeRepository, SQLRepository):
 
     @property

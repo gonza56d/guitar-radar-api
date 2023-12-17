@@ -1,13 +1,13 @@
 from os import getenv
 
 from app.api.repositories.base import SQLRepository
-from app.core.command_bus import APICommandBus
-from app.core.commands import CreateBridgeCommand, GetHealthCommand
+from app.core.api_bus import APICommandBus
+from app.core.commands import GetHealthCommand
 from app.core.handlers.health import GetHealthHandler
 from dependency_injector import containers, providers
 from dotenv import load_dotenv
 from pymessagebus import CommandBus
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, Engine
 
 from app.api.repositories.bridges import BridgeSQLRepository
 from app.core.repositories.bridges import BridgeRepository
@@ -32,7 +32,10 @@ class Container(containers.DeclarativeContainer):
     ])
 
     sql_db_url = f'{Env.SQL_IMPL}://{Env.SQL_USER}:{Env.SQL_PASSWORD}@{Env.SQL_SERVICE}/{Env.SQL_DB}'
-    sql_engine = create_engine(sql_db_url)
+    sql_engine: Engine = providers.Singleton(
+        create_engine,
+        url=sql_db_url
+    )
 
     sql_repository: SQLRepository = providers.Singleton(
         SQLRepository,

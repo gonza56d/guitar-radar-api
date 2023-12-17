@@ -4,8 +4,8 @@ from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
-from app.api.container import Container
-from app.core.command_bus import APICommandBus
+from app.api.containers import Container
+from app.core.api_bus import APICommandBus
 from app.core.commands.health import GetHealthCommand
 
 

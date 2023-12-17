@@ -1,11 +1,11 @@
 from dataclasses import dataclass
 
-from sqlalchemy import CursorResult, Engine, select, UpdateBase
+from sqlalchemy import CursorResult, Engine, UpdateBase
 
 from app.core.repositories.connectors import Connector
 
 
-@dataclass(kw_only=True)
+@dataclass
 class SQLRepository(Connector):
 
     engine: Engine
