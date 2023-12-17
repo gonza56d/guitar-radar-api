@@ -8,6 +8,7 @@ class Status(Enum):
     DEGRADED = 'DEGRADED', 'Guitar Radar API is working but some dependencies are down.'
 
 
+@dataclass
 class DependencyStatus:
 
     connected: bool
