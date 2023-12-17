@@ -1,20 +1,20 @@
 from http import HTTPStatus
 
-from app.core.commands.health import GetHealthCommand
 from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
-from pymessagebus import CommandBus
 
 from app.api.container import Container
+from app.core.command_bus import APICommandBus
+from app.core.commands.health import GetHealthCommand
 
 
 router = APIRouter(prefix='/health', tags=['health'])
 
 
-@inject
 @router.get('')
-async def get_health(command_bus: CommandBus = Depends(Provide[Container])):
+@inject
+async def get_health(command_bus: APICommandBus = Depends(Provide[Container.command_bus])):
     health_status = command_bus.handle(GetHealthCommand())
     return JSONResponse(
         content=health_status,

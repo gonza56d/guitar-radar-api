@@ -1,11 +1,9 @@
 from pymessagebus import CommandBus
 
-from app.core.commands.health import GetHealthCommand
-from app.core.commands.bridges import CreateBridgeCommand
-from app.core.handlers.bridges import CreateBridgeHandler
-from app.core.handlers.health import GetHealthHandler
 
+class APICommandBus(CommandBus):
 
-command_bus = CommandBus()
-command_bus.add_handler(CreateBridgeCommand, CreateBridgeHandler)
-command_bus.add_handler(GetHealthCommand, GetHealthHandler)
+    def __init__(self, handlers: dict):
+        super().__init__()
+        for command, handler in handlers.items():
+            self.add_handler(command, handler)
