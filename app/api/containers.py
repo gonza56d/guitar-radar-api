@@ -29,6 +29,9 @@ class Container(containers.DeclarativeContainer):
 
     wiring_config = containers.WiringConfiguration(modules=[
         '.routers.health',
+        '.routers.components.bridges',
+        '.repositories.base',
+        '.repositories.bridges',
     ])
 
     sql_db_url = f'{Env.SQL_IMPL}://{Env.SQL_USER}:{Env.SQL_PASSWORD}@{Env.SQL_SERVICE}/{Env.SQL_DB}'
@@ -37,12 +40,12 @@ class Container(containers.DeclarativeContainer):
         url=sql_db_url
     )
 
-    sql_repository: SQLRepository = providers.Singleton(
+    sql_repository: SQLRepository = providers.Factory(
         SQLRepository,
         engine=sql_engine
     )
 
-    bridge_repository: BridgeRepository = providers.Singleton(
+    bridge_repository: BridgeRepository = providers.Factory(
         BridgeSQLRepository,
         engine=sql_engine
     )

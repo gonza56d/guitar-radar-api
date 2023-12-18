@@ -10,7 +10,7 @@ class GetHealthHandler:
 
     sql_connection: Connector
 
-    def __call__(self, command: GetHealthCommand) -> HealthStatus:
+    async def __call__(self, command: GetHealthCommand) -> HealthStatus:
         sql_alive, sql_implementation = self.sql_connection.get_status()
 
         return HealthStatus(
