@@ -4,10 +4,13 @@ build:
 up:
 	docker compose up
 
+dependencies:
+	docker compose up -d postgres mongo
+
 down:
 	docker compose down
 
-debug:
+debug: dependencies
 	docker compose run --rm --service-ports api
 
 test:
