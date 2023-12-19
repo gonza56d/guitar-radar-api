@@ -14,7 +14,9 @@ router = APIRouter(prefix='/health', tags=['health'])
 
 @router.get('')
 @inject
-async def get_health(command_bus: APICommandBus = Depends(Provide[Container.command_bus])):
+async def get_health(
+        command_bus: APICommandBus = Depends(Provide[Container.command_bus])
+):
     health_status = await command_bus.handle(GetHealthCommand())
     return JSONResponse(
         content=health_status,

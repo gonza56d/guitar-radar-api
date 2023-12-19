@@ -4,7 +4,8 @@ from app.api.repositories.base import SQLRepository
 from app.core.api_bus import APICommandBus
 from app.core.commands import GetHealthCommand
 from app.core.handlers.health import GetHealthHandler
-from dependency_injector import containers, providers
+from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
+from dependency_injector.providers import Configuration, Factory, Singleton
 from dotenv import load_dotenv
 from pymessagebus import CommandBus
 from sqlalchemy import create_engine, Engine
@@ -25,40 +26,39 @@ class Env:
     SQL_DB = getenv('POSTGRES_DB')
 
 
-class Container(containers.DeclarativeContainer):
+class Container(DeclarativeContainer):
 
-    wiring_config = containers.WiringConfiguration(modules=[
-        '.routers.health',
-        '.routers.components.bridges',
-        '.repositories.base',
-        '.repositories.bridges',
+    wiring_config = WiringConfiguration(modules=[
+        'app.api.routers.health',
+        'app.api.routers.components.bridges',
+        'app.api.repositories.base',
+        'app.api.repositories.bridges',
     ])
+    Configuration()
 
     sql_db_url = f'{Env.SQL_IMPL}://{Env.SQL_USER}:{Env.SQL_PASSWORD}@{Env.SQL_SERVICE}/{Env.SQL_DB}'
-    sql_engine: Engine = providers.Singleton(
+    sql_engine: Singleton[Engine] = Singleton(
         create_engine,
         url=sql_db_url
     )
 
-    sql_repository: SQLRepository = providers.Factory(
+    sql_repository: Factory[SQLRepository] = Factory(
         SQLRepository,
         engine=sql_engine
     )
 
-    bridge_repository: BridgeRepository = providers.Factory(
+    bridge_repository: Factory[BridgeRepository] = Factory(
         BridgeSQLRepository,
         engine=sql_engine
     )
 
-    get_health_handler: GetHealthHandler = providers.Factory(
-        GetHealthHandler,
-        sql_connection=sql_repository
-    )
-
-    command_bus: CommandBus = providers.Factory(
+    command_bus: Factory[CommandBus] = Factory(
         APICommandBus,
         handlers={
-            GetHealthCommand: get_health_handler,
+            GetHealthCommand: Factory(
+                GetHealthHandler,
+                sql_connection=sql_repository
+            ),
             # CreateBridgeCommand: its_handler
         }
     )

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from app.core.commands.health import GetHealthCommand
+from app.core.commands import GetHealthCommand
 from app.core.models.health import HealthStatus, DependencyStatus
 from app.core.repositories.connectors import Connector
 
