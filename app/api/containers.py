@@ -1,29 +1,15 @@
-from os import getenv
-
+from app.api.env import Env
 from app.api.repositories.base import SQLRepository
 from app.core.api_bus import APICommandBus
 from app.core.commands import GetHealthCommand
 from app.core.handlers.health import GetHealthHandler
 from dependency_injector.containers import DeclarativeContainer, WiringConfiguration
 from dependency_injector.providers import Configuration, Factory, Singleton
-from dotenv import load_dotenv
 from pymessagebus import CommandBus
 from sqlalchemy import create_engine, Engine
 
 from app.api.repositories.bridges import BridgeSQLRepository
 from app.core.repositories.bridges import BridgeRepository
-
-
-load_dotenv()
-
-
-class Env:
-    """Environment variables loaded on api startup."""
-    SQL_IMPL = getenv('SQL_IMPL')
-    SQL_SERVICE = getenv('SQL_SERVICE')
-    SQL_USER = getenv('POSTGRES_USER')
-    SQL_PASSWORD = getenv('POSTGRES_PASSWORD')
-    SQL_DB = getenv('POSTGRES_DB')
 
 
 class Container(DeclarativeContainer):
