@@ -13,8 +13,7 @@ down:
 debug: dependencies
 	docker compose run --rm --service-ports api
 
-test:
-	docker compose up -d mongo
+test: dependencies
 	docker compose run --rm --service-ports api pytest
 
 upgrade:
