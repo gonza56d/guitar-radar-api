@@ -29,12 +29,11 @@ class OverallStatus:
 @dataclass(kw_only=True)
 class HealthStatus:
 
-    sql_db_status: DependencyStatus
-    document_db_status: DependencyStatus
+    statuses: list[DependencyStatus]
     overall_status: OverallStatus | None = None
 
     def __post_init__(self):
-        statuses = [self.sql_db_status, self.document_db_status]
+        statuses = [status.connected for status in self.statuses]
         status = Status.OUTAGE
         if any(statuses):
             status = Status.DEGRADED

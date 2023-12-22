@@ -13,3 +13,8 @@ class Env:
     SQL_USER = getenv('POSTGRES_USER')
     SQL_PASSWORD = getenv('POSTGRES_PASSWORD')
     SQL_DB = getenv('POSTGRES_DB')
+
+    DOCUMENT_IMPL = getenv('DOCUMENT_IMPL')
+    DOCUMENT_DB = getenv('DOCUMENT_DB')
+    DOCUMENT_HOST = getenv('DOCUMENT_HOST')
+    DOCUMENT_PORT = getenv('DOCUMENT_PORT')

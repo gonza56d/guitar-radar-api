@@ -1,19 +1,18 @@
-from dataclasses import dataclass
-
 from app.core.commands import GetHealthCommand
 from app.core.models.health import DependencyStatus, HealthStatus
-from app.core.repositories.connectors import Connector
+from app.core.repositories.health import HealthRepository
 
 
-@dataclass
 class GetHealthHandler:
 
-    sql_connection: Connector
+    health_repositories: list[HealthRepository]
+
+    def __init__(self, *repositories):
+        self.health_repositories = list(repositories)
 
     async def __call__(self, command: GetHealthCommand) -> HealthStatus:
-        sql_db_status = self.sql_connection.get_status()
+        statuses = []
+        for health in self.health_repositories:
+            statuses.append(health.get_status())
 
-        return HealthStatus(
-            sql_db_status=sql_db_status,
-            document_db_status=DependencyStatus(True, 'Mock')
-        )
+        return HealthStatus(statuses=statuses)

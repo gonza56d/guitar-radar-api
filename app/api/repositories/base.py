@@ -1,14 +1,14 @@
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
+from pymongo import MongoClient
+from pymongo.collection import Collection
+from pymongo.database import Database
 from sqlalchemy import Engine, UpdateBase, Row, Sequence, text
-
-from app.api.env import Env
-from app.core.models.health import DependencyStatus
-from app.core.repositories.connectors import Connector
 
 
 @dataclass
-class SQLRepository(Connector):
+class SQLRepository(ABC):
 
     engine: Engine
 
@@ -31,8 +31,18 @@ class SQLRepository(Connector):
         if returning == object:
             return result.first()
 
-    def get_status(self) -> DependencyStatus:
-        """Get if connection is ok and implementation."""
-        result = self._execute('SELECT 1', False, object)
-        connected = result[0] == 1 if result else False
-        return DependencyStatus(connected, Env.SQL_IMPL)
+
+@dataclass
+class MongoRepository(ABC):
+
+    client: MongoClient
+    database_name: str
+
+    @property
+    @abstractmethod
+    def collection(self) -> Collection:
+        """Get repository collection."""
+
+    @property
+    def database(self) -> Database:
+        return self.client[self.database_name]
