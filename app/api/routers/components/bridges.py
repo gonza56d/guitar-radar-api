@@ -3,9 +3,8 @@ from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 from pymessagebus import CommandBus
 
-from app.api.containers import Container
+from app.containers import Container
 from app.core.commands.bridges import CreateBridgeCommand
-from app.core.models.guitars import Bridge
 
 router = APIRouter(prefix='/bridges', tags=['bridges'])
 

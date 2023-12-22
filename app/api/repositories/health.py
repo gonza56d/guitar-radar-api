@@ -1,7 +1,7 @@
 from pymongo.collection import Collection
 
 from app.api.repositories.base import MongoRepository, SQLRepository
-from app.api.env import Env
+from app.env import Env
 from app.core.repositories.health import HealthRepository
 from app.core.models.health import DependencyStatus
 

@@ -3,7 +3,7 @@ from http import HTTPStatus
 from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends, Response
 
-from app.api.containers import Container
+from app.containers import Container
 from app.api.serializers.health import HealthStatusResponse
 from app.core.api_bus import APICommandBus
 from app.core.commands.health import GetHealthCommand

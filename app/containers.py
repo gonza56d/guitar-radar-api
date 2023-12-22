@@ -4,7 +4,7 @@ from pymessagebus import CommandBus
 from pymongo import MongoClient
 from sqlalchemy import create_engine, Engine
 
-from app.api.env import Env
+from app.env import Env
 from app.api.repositories.health import HealthSQLRepository, HealthMongoRepository
 from app.api.repositories.bridges import BridgeSQLRepository
 from app.core.api_bus import APICommandBus

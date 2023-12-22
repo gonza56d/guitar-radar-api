@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from fastapi.testclient import TestClient
 
-from app.api.main import api
+from app.main import api
 
 
 class APITest(ABC):

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from app.api.containers import Container
+from app.containers import Container
 from app.api.routers.components import router as components_router
 from app.api.routers.health import router as health_router
 
