@@ -18,6 +18,5 @@ class OverallStatusModel(BaseModel):
 
 class HealthStatusResponse(ResponseModel):
 
-    sql_db_status: DependencyStatusModel
-    document_db_status: DependencyStatusModel
+    statuses: list[DependencyStatusModel]
     overall_status: OverallStatus | None = None

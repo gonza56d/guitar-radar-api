@@ -17,4 +17,4 @@ class Env:
     DOCUMENT_IMPL = getenv('DOCUMENT_IMPL')
     DOCUMENT_DB = getenv('DOCUMENT_DB')
     DOCUMENT_HOST = getenv('DOCUMENT_HOST')
-    DOCUMENT_PORT = getenv('DOCUMENT_PORT')
+    DOCUMENT_PORT = int(getenv('DOCUMENT_PORT'))
