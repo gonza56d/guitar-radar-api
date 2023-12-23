@@ -21,6 +21,7 @@ from app.core.repositories.health import HealthRepository
 class Container(DeclarativeContainer):
 
     wiring_config = WiringConfiguration(modules=[
+        'app.api.routers.brands',
         'app.api.routers.health',
         'app.api.routers.components.bridges',
         'app.api.repositories.base',
