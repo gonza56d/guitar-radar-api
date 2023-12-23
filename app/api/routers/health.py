@@ -18,7 +18,7 @@ async def get_health(
         response: Response,
         command_bus: APICommandBus = Depends(Provide[Container.command_bus])
 ):
-    health_status: HealthStatus = await command_bus.handle(GetHealthCommand())
+    health_status: HealthStatus = command_bus.handle(GetHealthCommand())
     response.status_code = (
         HTTPStatus.OK
         if health_status.overall_status.status == 'HEALTHY' else

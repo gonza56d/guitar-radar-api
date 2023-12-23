@@ -10,7 +10,7 @@ class GetHealthHandler:
     def __init__(self, *repositories):
         self.health_repositories = list(repositories)
 
-    async def __call__(self, command: GetHealthCommand) -> HealthStatus:
+    def __call__(self, command: GetHealthCommand) -> HealthStatus:
         statuses = []
         for health in self.health_repositories:
             statuses.append(health.get_status())
