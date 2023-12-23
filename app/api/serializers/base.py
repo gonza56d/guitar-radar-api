@@ -15,7 +15,7 @@ class ResponseModel(ABC, BaseModel):
 class RequestModel(ABC, BaseModel):
 
     def deserialize(self):
-        return self.__class__(**self.model_dump())
+        return self.core_model(**self.model_dump())
 
     @property
     @abstractmethod

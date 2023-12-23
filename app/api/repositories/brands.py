@@ -19,5 +19,4 @@ class BrandSQLRepository(BrandRepository, SQLRepository):
     def create_brand(self, brand: CreateBrandCommand) -> Brand:
         stmt = insert(self.table).values(**brand.__dict__).returning()
         cursor_result = self._execute(stmt, commit=True, returning=object)
-        breakpoint()
         return Brand(*cursor_result)

@@ -10,11 +10,11 @@ from app.core.models.guitars import Brand
 router = APIRouter(prefix='/brands', tags=['brands'])
 
 
-@inject
 @router.post('', status_code=201, response_model=BrandResponse)
+@inject
 async def create_brand(
         create_brand_request: CreateBrandRequest,
         command_bus: APICommandBus = Depends(Provide[Container.command_bus])
 ):
-    brand: Brand = command_bus.handle(create_brand_request.deserialize())
+    brand: Brand = await command_bus.handle(create_brand_request.deserialize())
     return JSONResponse(content=BrandResponse.serialize(brand), status_code=201)

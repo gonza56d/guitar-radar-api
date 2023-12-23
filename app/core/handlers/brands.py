@@ -10,5 +10,5 @@ class CreateBrandHandler:
 
     brand_repository: BrandRepository
 
-    def __call__(self, command: CreateBrandCommand) -> Brand:
+    async def __call__(self, command: CreateBrandCommand) -> Brand:
         return self.brand_repository.create_brand(command)
