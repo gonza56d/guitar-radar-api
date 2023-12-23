@@ -16,6 +16,12 @@ debug: dependencies
 test: dependencies
 	docker compose run --rm --service-ports api pytest
 
+test-case: dependencies
+	docker compose run --rm --service-ports api pytest -k $(TEST)
+
+test-single:
+	docker compose run --rm --service-ports api pytest -k
+
 upgrade:
 	docker compose run api alembic upgrade head
 
@@ -24,7 +30,3 @@ downgrade:
 
 alembic:
 	docker compose run api alembic revision --autogenerate -m "$(MIGRATION)"
-
-test-case:
-	docker compose up -d mongo
-	docker compose run --rm --service-ports api pytest -k $(TEST)

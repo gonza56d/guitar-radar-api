@@ -1,8 +1,6 @@
 from dataclasses import dataclass
 from uuid import UUID
 
-from app.core.models.guitars import Bridge
-
 
 @dataclass
 class CreateBridgeCommand:

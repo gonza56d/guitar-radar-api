@@ -4,11 +4,15 @@ from pymessagebus import CommandBus
 from pymongo import MongoClient
 from sqlalchemy import create_engine, Engine
 
+from app.api.repositories.brands import BrandSQLRepository
+from app.core.handlers.brands import CreateBrandHandler
+from app.core.handlers.bridges import CreateBridgeHandler
+from app.core.repositories.brands import BrandRepository
 from app.env import Env
 from app.api.repositories.health import HealthSQLRepository, HealthMongoRepository
 from app.api.repositories.bridges import BridgeSQLRepository
 from app.core.api_bus import APICommandBus
-from app.core.commands import GetHealthCommand
+from app.core.commands import GetHealthCommand, CreateBridgeCommand, CreateBrandCommand
 from app.core.handlers.health import GetHealthHandler
 from app.core.repositories.bridges import BridgeRepository
 from app.core.repositories.health import HealthRepository
@@ -35,6 +39,11 @@ class Container(DeclarativeContainer):
         port=Env.DOCUMENT_PORT
     )
 
+    brand_repository: Factory[BrandRepository] = Factory(
+        BrandSQLRepository,
+        engine=sql_engine
+    )
+
     bridge_repository: Factory[BridgeRepository] = Factory(
         BridgeSQLRepository,
         engine=sql_engine
@@ -58,6 +67,14 @@ class Container(DeclarativeContainer):
             GetHealthCommand: Factory(
                 GetHealthHandler,
                 *health_repositories
+            ),
+            CreateBrandCommand: Factory(
+                CreateBrandHandler,
+                brand_repository=brand_repository
+            ),
+            CreateBridgeCommand: Factory(
+                CreateBridgeHandler,
+                bridge_repository=bridge_repository
             ),
         }
     )

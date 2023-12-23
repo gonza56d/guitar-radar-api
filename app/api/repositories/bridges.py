@@ -17,5 +17,7 @@ class BridgeSQLRepository(BridgeRepository, SQLRepository):
         return bridge_table
 
     def create_bridge(self, bridge: CreateBridgeCommand) -> Bridge:
-        stmt = insert(self.table).values(**bridge.__dict__)
-        cursor_result = self._execute(stmt)
+        stmt = insert(self.table).values(**bridge.__dict__).returning()
+        cursor_result = self._execute(stmt, commit=True, returning=object)
+        breakpoint()
+        return Bridge(*cursor_result)
