@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from sqlalchemy import insert, Table
+from sqlalchemy import Table
 
 from app.api.orm.guitars import brand_table
 from app.api.repositories.base import SQLRepository
@@ -17,6 +17,4 @@ class BrandSQLRepository(BrandRepository, SQLRepository):
         return brand_table
 
     def create_brand(self, brand: CreateBrandCommand) -> Brand:
-        stmt = insert(self.table).values(**brand.__dict__).returning()
-        cursor_result = self._execute(stmt, commit=True, returning=object)
-        return Brand(*cursor_result)
+        return self._insert(brand, Brand)

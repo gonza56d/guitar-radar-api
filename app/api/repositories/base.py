@@ -1,10 +1,19 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from typing import Type, Any
 
 from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.database import Database
-from sqlalchemy import Engine, UpdateBase, Row, Sequence, text
+from sqlalchemy import (
+    Engine,
+    insert,
+    literal_column,
+    Table,
+    text,
+    UpdateBase,
+)
+from sqlalchemy.sql.dml import ReturningInsert
 
 
 @dataclass
@@ -12,12 +21,17 @@ class SQLRepository(ABC):
 
     engine: Engine
 
+    @property
+    @abstractmethod
+    def table(self) -> Table | None:
+        """Override table used by implemented repository."""
+
     def _execute(
             self,
             stmt: UpdateBase | str,
             commit: bool,
             returning: type[object] | type[list] | type[None]
-    ) -> Row | Sequence[Row] | None:
+    ) -> dict[str, Any] | list[dict[str, Any]]:
         if isinstance(stmt, str):
             stmt = text(stmt)
         else:
@@ -26,10 +40,37 @@ class SQLRepository(ABC):
             result = conn.execute(stmt)
             if commit:
                 conn.commit()
+        columns = result.keys()
         if returning == list:
-            return result.all()
+            return [dict(zip(columns, row)) for row in result.all()]
         if returning == object:
-            return result.first()
+            return dict(zip(columns, result.first()))
+
+    def _insert(
+            self,
+            instances: object | list[object],
+            returning_class: Type | list[Type]
+    ) -> Any | list[Any]:
+        stmt = self.__build_insert_stmt(instances)
+        cursor_result = self._execute(
+            stmt,
+            commit=True,
+            returning=object if not isinstance(returning_class, list) else list
+        )
+        return (
+            returning_class(**cursor_result)
+            if not isinstance(returning_class, list) else
+            [returning_class(**value) for value in cursor_result]
+        )
+
+    def __build_insert_stmt(self, instances: object | list[object]) -> ReturningInsert:
+        values = (
+            instances.__dict__
+            if not isinstance(instances, list) else
+            [instance.__dict__ for instance in instances]
+        )
+        stmt = insert(self.table).values(values).returning(literal_column('*'))
+        return stmt
 
 
 @dataclass

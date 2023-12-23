@@ -22,4 +22,4 @@ class TestBrands(APITest):
         assert response.json()['name'] == 'ibanez'
         assert response.json()['founded_in'] == 1957
         created_id = response.json()['id']
-        assert isinstance(created_id, UUID)
+        assert isinstance(UUID(created_id), UUID)

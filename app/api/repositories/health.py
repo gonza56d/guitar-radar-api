@@ -1,4 +1,5 @@
 from pymongo.collection import Collection
+from sqlalchemy import Table
 
 from app.api.repositories.base import MongoRepository, SQLRepository
 from app.env import Env
@@ -7,6 +8,10 @@ from app.core.models.health import DependencyStatus
 
 
 class HealthSQLRepository(SQLRepository, HealthRepository):
+
+    @property
+    def table(self) -> Table | None:
+        return None
 
     def get_status(self) -> DependencyStatus:
         """Get if connection is ok and implementation."""

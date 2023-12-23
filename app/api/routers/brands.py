@@ -17,4 +17,4 @@ async def create_brand(
         command_bus: APICommandBus = Depends(Provide[Container.command_bus])
 ):
     brand: Brand = command_bus.handle(create_brand_request.deserialize())
-    return JSONResponse(content=BrandResponse.serialize(brand), status_code=201)
+    return BrandResponse.serialize(brand)
