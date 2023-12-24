@@ -13,7 +13,10 @@ from sqlalchemy import (
     text,
     UpdateBase,
 )
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql.dml import ReturningInsert
+
+from app.api.exceptions import AlreadyExistsAPIException
 
 
 @dataclass
@@ -52,11 +55,16 @@ class SQLRepository(ABC):
             returning_class: Type | list[Type]
     ) -> Any | list[Any]:
         stmt = self.__build_insert_stmt(instances)
-        cursor_result = self._execute(
-            stmt,
-            commit=True,
-            returning=object if not isinstance(returning_class, list) else list
-        )
+        try:
+            cursor_result = self._execute(
+                stmt,
+                commit=True,
+                returning=object if not isinstance(returning_class, list) else list
+            )
+        except IntegrityError as err:
+            msg = err.args[0]
+            key, value, _ = msg.split('Key ')[1].replace('(', '').replace('=', '').split(')')
+            raise AlreadyExistsAPIException(returning_class.__name__, key, value)
         return (
             returning_class(**cursor_result)
             if not isinstance(returning_class, list) else
