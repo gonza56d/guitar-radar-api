@@ -23,3 +23,9 @@ class TestBrands(APITest):
         assert response.json()['founded_in'] == 1957
         created_id = response.json()['id']
         assert isinstance(UUID(created_id), UUID)
+
+    def test_create_brand_already_exists_exception(self):
+        self.client.post('', json={'name': 'schecter', 'founded_in': 1976})
+        response = self.client.post('', json={'name': 'schecter'})
+
+        assert response.status_code == 422
