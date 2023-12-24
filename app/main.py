@@ -22,17 +22,20 @@ def create_app() -> FastAPI:
     app = FastAPI()
     app.container = container
 
-    @app.exception_handler(Exception)
-    async def api_exception_handler(request: Request, exc: Exception):
-        if isinstance(exc, BusinessException) and isinstance(exc, APIException):
+    @app.middleware('http')
+    async def api_exception_handler(request: Request, call_next):
+        try:
+            return await call_next(request)
+        except (BusinessException, APIException) as exc:
             return JSONResponse(
                 status_code=exc.status_code,
                 content={'message': exc.message}
             )
-        return JSONResponse(
-            status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
-            content={'message': 'Internal server error.'}
-        )
+        except Exception:
+            return JSONResponse(
+                status_code=HTTPStatus.INTERNAL_SERVER_ERROR,
+                content={'message': 'Internal server error.'}
+            )
 
     include_routers(app)
     return app

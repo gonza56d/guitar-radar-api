@@ -1,5 +1,6 @@
 from uuid import UUID
 
+from app.api.exceptions import AlreadyExistsAPIException
 from tests.base import APITest
 
 
@@ -11,7 +12,7 @@ class TestBrands(APITest):
 
     def test_create_brand(self):
         response = self.client.post(
-            '',
+            self.domain_prefix,
             json={
                 'name': 'ibanez',
                 'founded_in': 1957
@@ -25,7 +26,6 @@ class TestBrands(APITest):
         assert isinstance(UUID(created_id), UUID)
 
     def test_create_brand_already_exists_exception(self):
-        self.client.post('', json={'name': 'schecter', 'founded_in': 1976})
-        response = self.client.post('', json={'name': 'schecter'})
-
+        self.client.post(self.domain_prefix, json={'name': 'schecter', 'founded_in': 1976})
+        response = self.client.post(self.domain_prefix, json={'name': 'schecter'})
         assert response.status_code == 422

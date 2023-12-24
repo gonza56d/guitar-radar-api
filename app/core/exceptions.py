@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from typing import Any
 
 
-class BusinessException(ABC):
+class BusinessException(ABC, Exception):
 
     @property
     @abstractmethod

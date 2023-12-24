@@ -10,5 +10,5 @@ class TestHealth(APITest):
         return '/health'
 
     def test_health(self):
-        response = self.client.get('')
+        response = self.client.get(self.domain_prefix)
         assert response.status_code == HTTPStatus.OK
