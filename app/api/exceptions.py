@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from http import HTTPStatus
 
-from app.core.exceptions import AlreadyExistsException
+from app.core.exceptions import AlreadyExistsException, NotFoundException
 
 
 class APIException(ABC, Exception):
@@ -17,3 +17,10 @@ class AlreadyExistsAPIException(AlreadyExistsException, APIException):
     @property
     def status_code(self) -> HTTPStatus:
         return HTTPStatus.UNPROCESSABLE_ENTITY
+
+
+class NotFoundAPIException(NotFoundException, APIException):
+
+    @property
+    def status_code(self) -> HTTPStatus:
+        return HTTPStatus.NOT_FOUND

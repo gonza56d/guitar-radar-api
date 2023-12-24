@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from uuid import UUID
 
 from sqlalchemy import Table
 
@@ -18,3 +19,6 @@ class BrandSQLRepository(BrandRepository, SQLRepository):
 
     def create_brand(self, brand: CreateBrandCommand) -> Brand:
         return self._insert(brand, Brand)
+
+    def get_brand(self, id: UUID) -> Brand:
+        return self._get(id, Brand)

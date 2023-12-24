@@ -5,7 +5,8 @@ from pymongo import MongoClient
 from sqlalchemy import create_engine, Engine
 
 from app.api.repositories.brands import BrandSQLRepository
-from app.core.handlers.brands import CreateBrandHandler
+from app.core.commands.brands import GetBrandCommand
+from app.core.handlers.brands import CreateBrandHandler, GetBrandHandler
 from app.core.handlers.bridges import CreateBridgeHandler
 from app.core.repositories.brands import BrandRepository
 from app.env import Env
@@ -77,5 +78,9 @@ class Container(DeclarativeContainer):
                 CreateBridgeHandler,
                 bridge_repository=bridge_repository
             ),
+            GetBrandCommand: Factory(
+                GetBrandHandler,
+                brand_repository=brand_repository
+            )
         }
     )

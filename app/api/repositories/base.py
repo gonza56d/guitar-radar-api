@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import Type, Any
+from uuid import UUID
 
 from pymongo import MongoClient
 from pymongo.collection import Collection
@@ -9,6 +10,8 @@ from sqlalchemy import (
     Engine,
     insert,
     literal_column,
+    select,
+    Select,
     Table,
     text,
     UpdateBase,
@@ -16,7 +19,7 @@ from sqlalchemy import (
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql.dml import ReturningInsert
 
-from app.api.exceptions import AlreadyExistsAPIException
+from app.api.exceptions import AlreadyExistsAPIException, NotFoundAPIException
 
 
 @dataclass
@@ -31,10 +34,10 @@ class SQLRepository(ABC):
 
     def _execute(
             self,
-            stmt: UpdateBase | str,
+            stmt: Select | UpdateBase | str,
             commit: bool,
             returning: type[object] | type[list] | type[None]
-    ) -> dict[str, Any] | list[dict[str, Any]]:
+    ) -> dict[str, Any] | list[dict[str, Any]] | None:
         if isinstance(stmt, str):
             stmt = text(stmt)
         else:
@@ -47,7 +50,21 @@ class SQLRepository(ABC):
         if returning == list:
             return [dict(zip(columns, row)) for row in result.all()]
         if returning == object:
+            result = result.first()
+            if not result:
+                return None
             return dict(zip(columns, result.first()))
+
+    def _get(self, id: UUID, returning_class: Type) -> Any:
+        stmt = select(self.table).where(self.table.c.id == id)
+        cursor_result = self._execute(
+            stmt,
+            commit=False,
+            returning=object
+        )
+        if cursor_result is None:
+            raise NotFoundAPIException(returning_class.__name__, 'id', id)
+        return returning_class(**cursor_result)
 
     def _insert(
             self,

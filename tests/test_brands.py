@@ -1,4 +1,4 @@
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from app.api.exceptions import AlreadyExistsAPIException
 from tests.base import APITest
@@ -38,4 +38,12 @@ class TestBrands(APITest):
             'id': created_id,
             'name': 'jackson',
             'founded_in': 1980
+        }
+
+    def test_get_brand_not_found(self):
+        id = uuid4()
+        response = self.client.get(f'{self.domain_prefix}/{id}')
+        assert response.status_code == 404
+        assert response.json() == {
+            'message': f'Brand by id {id} was not found.'
         }
