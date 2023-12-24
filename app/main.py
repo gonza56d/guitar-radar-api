@@ -22,8 +22,8 @@ def create_app() -> FastAPI:
     app = FastAPI()
     app.container = container
 
-    #@app.exception_handler(Exception)
-    async def api_exception_handler(request: Request, exc, Exception):
+    @app.exception_handler(Exception)
+    async def api_exception_handler(request: Request, exc: Exception):
         if isinstance(exc, BusinessException) and isinstance(exc, APIException):
             return JSONResponse(
                 status_code=exc.status_code,
