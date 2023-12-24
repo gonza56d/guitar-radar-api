@@ -16,7 +16,7 @@ class HealthSQLRepository(SQLRepository, HealthRepository):
     def get_status(self) -> DependencyStatus:
         """Get if connection is ok and implementation."""
         result = self._execute('SELECT 1', False, object)
-        connected = result[0] == 1 if result else False
+        connected = result['?column?'] == 1 if result else False
         return DependencyStatus(connected, Env.SQL_IMPL)
 
 
