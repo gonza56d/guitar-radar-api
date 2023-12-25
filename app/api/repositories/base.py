@@ -53,7 +53,7 @@ class SQLRepository(ABC):
             result = result.first()
             if not result:
                 return None
-            return dict(zip(columns, result.first()))
+            return dict(zip(columns, result))
 
     def _get(self, id: UUID, returning_class: Type) -> Any:
         stmt = select(self.table).where(self.table.c.id == id)
