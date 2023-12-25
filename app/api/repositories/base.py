@@ -57,13 +57,20 @@ class SQLRepository(ABC):
 
     def _get(self, id: UUID, returning_class: Type) -> Any:
         stmt = select(self.table).where(self.table.c.id == id)
+        return self.__execute_get(stmt, returning_class, 'id', id)
+
+    def _get_by_name(self, name: str, returning_class: Type) -> Any:
+        stmt = select(self.table).where(self.table.c.name == name)
+        return self.__execute_get(stmt, returning_class, 'name', name)
+
+    def __execute_get(self, stmt, returning_class: Type, field: str, value: Any):
         cursor_result = self._execute(
             stmt,
             commit=False,
             returning=object
         )
         if cursor_result is None:
-            raise NotFoundAPIException(returning_class.__name__, 'id', id)
+            raise NotFoundAPIException(returning_class.__name__, field, value)
         return returning_class(**cursor_result)
 
     def _insert(

@@ -20,6 +20,4 @@ class GetBrandHandler:
     brand_repository: BrandRepository
 
     def __call__(self, command: GetBrandCommand) -> Brand:
-        return self.brand_repository.get_brand(
-            command.id
-        )
+        return self.brand_repository.get_brand(command)

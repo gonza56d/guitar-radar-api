@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
-from uuid import UUID
 
-from app.core.commands.brands import CreateBrandCommand
+from app.core.commands.brands import CreateBrandCommand, GetBrandCommand
 from app.core.models.guitars import Brand
 
 
@@ -12,5 +11,5 @@ class BrandRepository(ABC):
         pass
 
     @abstractmethod
-    def get_brand(self, id: UUID) -> Brand:
+    def get_brand(self, command: GetBrandCommand) -> Brand:
         pass

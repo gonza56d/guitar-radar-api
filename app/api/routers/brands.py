@@ -23,11 +23,16 @@ async def create_brand(
     return BrandResponse.serialize(brand)
 
 
-@router.get('/{id}', status_code=200, response_model=BrandResponse)
+@router.get('/{id_or_name}', status_code=200, response_model=BrandResponse)
 @inject
 async def get_brand(
-        id: UUID,
+        id_or_name: UUID | str,
         command_bus: APICommandBus = Depends(Provide[Container.command_bus])
 ):
-    brand: Brand = command_bus.handle(GetBrandCommand(id=id))
+    try:
+        command = GetBrandCommand(id=UUID(id_or_name))
+    except ValueError:
+        command = GetBrandCommand(name=id_or_name)
+
+    brand: Brand = command_bus.handle(command)
     return BrandResponse.serialize(brand)

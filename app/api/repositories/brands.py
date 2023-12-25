@@ -1,11 +1,10 @@
 from dataclasses import dataclass
-from uuid import UUID
 
 from sqlalchemy import Table
 
 from app.api.orm.guitars import brand_table
 from app.api.repositories.base import SQLRepository
-from app.core.commands.brands import CreateBrandCommand
+from app.core.commands.brands import CreateBrandCommand, GetBrandCommand
 from app.core.models.guitars import Brand
 from app.core.repositories.brands import BrandRepository
 
@@ -20,5 +19,5 @@ class BrandSQLRepository(BrandRepository, SQLRepository):
     def create_brand(self, brand: CreateBrandCommand) -> Brand:
         return self._insert(brand, Brand)
 
-    def get_brand(self, id: UUID) -> Brand:
-        return self._get(id, Brand)
+    def get_brand(self, command: GetBrandCommand) -> Brand:
+        return self._get(command.id, Brand) if command.id is not None else self._get_by_name(command.name, Brand)

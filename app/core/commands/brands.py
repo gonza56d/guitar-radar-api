@@ -12,4 +12,5 @@ class CreateBrandCommand:
 @dataclass
 class GetBrandCommand:
 
-    id: UUID
+    id: UUID | None = None
+    name: str | None = None
