@@ -7,6 +7,7 @@ from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.database import Database
 from sqlalchemy import (
+    Column,
     Engine,
     insert,
     literal_column,
@@ -62,6 +63,10 @@ class SQLRepository(ABC):
     def _get_by_name(self, name: str, returning_class: Type) -> Any:
         stmt = select(self.table).where(self.table.c.name == name)
         return self.__execute_get(stmt, returning_class, 'name', name)
+
+    def _get_by_column(self, value: Any, column: Column, returning_class: Type) -> Any | None:
+        stmt = select(self.table).where(column == value)
+        return self.__execute_get(stmt, returning_class, column.name, value)
 
     def __execute_get(self, stmt, returning_class: Type, field: str, value: Any):
         cursor_result = self._execute(

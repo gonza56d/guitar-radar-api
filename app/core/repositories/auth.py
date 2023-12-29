@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
+from uuid import UUID
 
-from app.core.commands.auth import AuthenticateCommand
-from app.core.models.auth import AuthToken
+from app.core.models.auth import Auth
 
 
 class AuthRepository(ABC):
 
     @abstractmethod
-    def authenticate(self, authentication: AuthenticateCommand) -> AuthToken:
-        """User authentication contract."""
+    def get_auth(self, user_id: UUID) -> Auth:
+        """Get auth from given user id."""
