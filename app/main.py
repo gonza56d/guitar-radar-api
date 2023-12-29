@@ -5,6 +5,7 @@ from fastapi.responses import JSONResponse
 
 from app.api.exceptions import APIException
 from app.containers import Container
+from app.api.routers.auth import router as auth_router
 from app.api.routers.brands import router as brand_router
 from app.api.routers.components import router as components_router
 from app.api.routers.health import router as health_router
@@ -12,9 +13,10 @@ from app.core.exceptions import BusinessException
 
 
 def include_routers(app: FastAPI) -> None:
-    app.include_router(health_router)
+    app.include_router(auth_router)
     app.include_router(brand_router)
     app.include_router(components_router)
+    app.include_router(health_router)
 
 
 def create_app() -> FastAPI:
