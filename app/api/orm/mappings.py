@@ -2,6 +2,7 @@ from uuid import uuid4
 
 from sqlalchemy import (
     Column,
+    Date,
     Enum,
     ForeignKey,
     Integer,
@@ -11,7 +12,7 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import registry, relationship
 
-from app.core.models import guitars
+from app.core.models import auth, guitars, users
 
 
 mapper_registry = registry()
@@ -74,6 +75,29 @@ bridge_color_table = Table(
     Column('bridge_id', ForeignKey('bridges.id'), primary_key=True),
 )
 
+
+users_table = Table(
+    'users',
+    mapper_registry.metadata,
+    get_id_column(),
+    Column('first_name', String, nullable=False),
+    Column('last_name', String, nullable=False),
+    Column('email', String, nullable=False),
+    Column('birth', Date, nullable=False),
+)
+
+
+auth_table = Table(
+    'auth',
+    mapper_registry.metadata,
+    get_id_column(),
+    Column('user_id', UUID(as_uuid=True), ForeignKey('users.id'), nullable=False),
+    Column('password', String, nullable=False)
+)
+
+
+mapper_registry.map_imperatively(users.User, users_table)
+mapper_registry.map_imperatively(auth.Auth, auth_table)
 mapper_registry.map_imperatively(guitars.Brand, brand_table)
 mapper_registry.map_imperatively(
     guitars.Bridge,

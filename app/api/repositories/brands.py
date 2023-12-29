@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from sqlalchemy import Table
 
-from app.api.orm.guitars import brand_table
+from app.api.orm.mappings import brand_table
 from app.api.repositories.base import SQLRepository
 from app.core.commands.brands import CreateBrandCommand, GetBrandCommand
 from app.core.models.guitars import Brand

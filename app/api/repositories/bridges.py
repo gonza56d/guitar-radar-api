@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 from sqlalchemy import insert, Table
 
-from app.api.orm.guitars import bridge_table
+from app.api.orm.mappings import bridge_table
 from app.api.repositories.base import SQLRepository
 from app.core.commands.bridges import CreateBridgeCommand
 from app.core.models.guitars import Bridge
