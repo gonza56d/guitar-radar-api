@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Type
 
 from pydantic import EmailStr
@@ -19,3 +20,4 @@ class AuthRequest(RequestModel):
 class AuthResponse(ResponseModel):
 
     access_token: str
+    expiration: datetime
