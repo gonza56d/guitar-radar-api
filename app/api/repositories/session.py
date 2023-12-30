@@ -1,5 +1,8 @@
+from datetime import datetime, timedelta
 from typing import Any
 from uuid import UUID
+
+import jwt
 
 from app.api.repositories.base import RedisRepository
 from app.core.repositories.session import SessionRepository
@@ -7,8 +10,16 @@ from app.core.repositories.session import SessionRepository
 
 class SessionTokenRedisRepository(SessionRepository, RedisRepository):
 
-    def set_user_session(self, key: str, user_id: UUID) -> None:
-        self.set(key, str(user_id))
+    token_expiration_minutes: int
+
+    def set_user_session(self, user_id: UUID) -> str:
+        jwt_token = self._build_jwt_token(user_id)
+        self.set(
+            key=jwt_token,
+            value=str(user_id),
+            expiration_minutes=self.token_expiration_minutes
+        )
+        return jwt_token
 
     def get_user_session(self, key: str) -> Any | None:
         return self.get(key)
@@ -16,3 +27,10 @@ class SessionTokenRedisRepository(SessionRepository, RedisRepository):
     @property
     def namespace(self) -> str:
         return 'session_token'
+
+    def _build_jwt_token(self, user_id: UUID) -> str:
+        jwt_token_payload = {
+            'user_id': str(user_id),
+            'exp': (datetime.utcnow() + timedelta(minutes=self.token_expiration_minutes)).isoformat()
+        }
+        return jwt.encode(jwt_token_payload, self.secret_key, algorithm='HS256')

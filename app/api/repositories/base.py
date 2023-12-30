@@ -133,12 +133,18 @@ class RedisRepository(ABC):
         self._client: Redis = client
 
     def get(self, key: str) -> str | dict:
-        return self._client.get(f'{self.namespace}:{key}')
+        return self._client.get(self._get_key(key))
 
-    def set(self, key: str, value: str | dict) -> None:
-        self._client.set(f'{self.namespace}:{key}', value)
+    def set(self, key: str, value: str | dict, expiration_minutes: int | None = None) -> None:
+        if expiration_minutes is None:
+            self._client.set(self._get_key(key), value)
+        else:
+            self._client.setex(self._get_key(key), expiration_minutes * 60, value)
 
     @property
     @abstractmethod
     def namespace(self) -> str:
         """Declare index name for repository implementation."""
+
+    def _get_key(self, key: str) -> str:
+        return f'{self.namespace}:{key}'

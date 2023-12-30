@@ -1,15 +1,20 @@
 from http import HTTPStatus
+from typing import Type
 
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 
-from app.api.exceptions import APIException
+from app.api.exceptions import APIException, UnauthorizedAPIException
 from app.containers import Container
 from app.api.routers.auth import router as auth_router
 from app.api.routers.brands import router as brand_router
 from app.api.routers.components import router as components_router
 from app.api.routers.health import router as health_router
-from app.core.exceptions import BusinessException
+from app.core.exceptions import BusinessException, UnauthorizedException
+
+core_exception_map: dict[Type[BusinessException], APIException] = {
+    UnauthorizedException: UnauthorizedAPIException()
+}
 
 
 def include_routers(app: FastAPI) -> None:
@@ -29,6 +34,8 @@ def create_app() -> FastAPI:
         try:
             return await call_next(request)
         except (BusinessException, APIException) as exc:
+            if not isinstance(exc, APIException):
+                exc = core_exception_map[type(exc)]
             return JSONResponse(
                 status_code=exc.status_code,
                 content={'message': exc.message}

@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 from http import HTTPStatus
 
-from app.core.exceptions import AlreadyExistsException, NotFoundException, UnauthorizedException
+from app.core.exceptions import AlreadyExistsException, NotFoundException, UnauthorizedException, BusinessException
 
 
-class APIException(ABC, Exception):
+class APIException(ABC, BusinessException):
 
     @property
     @abstractmethod
