@@ -34,3 +34,10 @@ class NotFoundException(BusinessException):
     @property
     def message(self) -> str:
         return f'{self._entity} by {self._field} {self._value} was not found.'
+
+
+class UnauthorizedException(BusinessException):
+
+    @property
+    def message(self) -> str:
+        return 'Invalid email or password.'

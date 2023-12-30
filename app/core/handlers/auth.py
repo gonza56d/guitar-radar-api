@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import bcrypt
 
-from app.api.exceptions import NotFoundAPIException
+from app.api.exceptions import NotFoundAPIException, UnauthorizedAPIException
 from app.core.commands.auth import AuthenticateCommand
 from app.core.models.auth import AuthToken
 from app.core.repositories.auth import AuthRepository
@@ -19,9 +19,9 @@ class AuthenticateHandler:
             user = self.user_repository.get_user_by_email(command.email)
             auth = self.auth_repository.get_auth(user.id)
         except NotFoundAPIException:
-            raise  # TODO: bad password
+            raise UnauthorizedAPIException()
         if not self.__is_password_valid(command.password, auth.password):
-            raise  # TODO: bad password
+            raise UnauthorizedAPIException()
         # TODO: generate auth token
 
     def __hash_password(self, raw_password: str) -> str:
