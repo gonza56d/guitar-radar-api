@@ -6,6 +6,7 @@ from uuid import UUID
 from pymongo import MongoClient
 from pymongo.collection import Collection
 from pymongo.database import Database
+from redis import Redis
 from sqlalchemy import (
     Column,
     Engine,
@@ -124,3 +125,20 @@ class MongoRepository(ABC):
     @property
     def database(self) -> Database:
         return self.client[self.database_name]
+
+
+class RedisRepository(ABC):
+
+    def __init__(self, client: Redis):
+        self._client: Redis = client
+
+    def get(self, key: str) -> str | dict:
+        return self._client.get(f'{self.namespace}:{key}')
+
+    def set(self, key: str, value: str | dict) -> None:
+        self._client.set(f'{self.namespace}:{key}', value)
+
+    @property
+    @abstractmethod
+    def namespace(self) -> str:
+        """Declare index name for repository implementation."""

@@ -5,6 +5,7 @@ from app.api.exceptions import NotFoundAPIException, UnauthorizedAPIException
 from app.core.commands.auth import AuthenticateCommand
 from app.core.models.auth import AuthToken
 from app.core.repositories.auth import AuthRepository
+from app.core.repositories.session import SessionRepository
 from app.core.repositories.users import UserRepository
 
 
@@ -13,6 +14,7 @@ class AuthenticateHandler:
 
     auth_repository: AuthRepository
     user_repository: UserRepository
+    session_repository: SessionRepository
 
     def __call__(self, command: AuthenticateCommand) -> AuthToken:
         try:
