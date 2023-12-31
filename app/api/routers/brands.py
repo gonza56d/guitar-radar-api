@@ -1,10 +1,8 @@
-from typing import Annotated
 from uuid import UUID
 
 from dependency_injector.wiring import inject, Provide
 from fastapi import APIRouter, Depends
 
-from app.api.routers.base import oauth2_scheme
 from app.api.serializers.brands import BrandResponse, CreateBrandRequest
 from app.containers import Container
 from app.core.api_bus import APICommandBus
@@ -18,7 +16,6 @@ router = APIRouter(prefix='/brands', tags=['brands'])
 @inject
 async def create_brand(
         create_brand_request: CreateBrandRequest,
-        token: Annotated[str, Depends(oauth2_scheme)],
         command_bus: APICommandBus = Depends(Provide[Container.command_bus])
 ):
     brand: Brand = command_bus.handle(create_brand_request.deserialize())
