@@ -11,9 +11,10 @@ class TestBrands(APITest):
     def domain_prefix(self) -> str:
         return '/brands'
 
-    def test_create_brand(self):
+    def test_create_brand_ok(self):
         response = self.client.post(
             self.domain_prefix,
+            **self.auth_headers,
             json={
                 'name': 'ibanez',
                 'founded_in': 1957
@@ -27,13 +28,18 @@ class TestBrands(APITest):
         assert isinstance(UUID(created_id), UUID)
 
     def test_create_brand_already_exists_exception(self):
-        self.client.post(self.domain_prefix, json={'name': 'schecter', 'founded_in': 1976})
-        response = self.client.post(self.domain_prefix, json={'name': 'schecter'})
+        self.client.post(self.domain_prefix, **self.auth_headers, json={'name': 'schecter', 'founded_in': 1976})
+        response = self.client.post(self.domain_prefix, **self.auth_headers, json={'name': 'schecter'})
         assert response.status_code == 422
+        assert response.json() == {'message': 'Brand with name schecter already exists.'}
 
     @pytest.mark.parametrize('get_by', ['id', 'name'])
     def test_get_brand(self, get_by: str):
-        created_response = self.client.post(self.domain_prefix, json={'name': 'jackson', 'founded_in': 1980})
+        created_response = self.client.post(
+            self.domain_prefix,
+            **self.auth_headers,
+            json={'name': 'jackson', 'founded_in': 1980}
+        )
         value_to_get_by = created_response.json().get(get_by)
         response = self.client.get(f'{self.domain_prefix}/{value_to_get_by}')
         assert response.json() == created_response.json()

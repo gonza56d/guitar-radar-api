@@ -9,6 +9,7 @@ class Color:
 
     id: UUID
     name: str
+    user_id: UUID
 
 
 @dataclass(kw_only=True)
@@ -17,12 +18,14 @@ class Brand:
     id: UUID
     name: str
     founded_in: int | None = None
+    user_id: UUID
 
 
 @dataclass(kw_only=True)
 class BrandedComponent:
 
     id: UUID
+    user_id: UUID
     brand: Brand
     name: str
     year_of_introduction: int | None = None

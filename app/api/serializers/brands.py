@@ -10,6 +10,7 @@ class BrandResponse(ResponseModel):
     id: UUID
     name: str
     founded_in: int | None = None
+    user_id: UUID
 
 
 class CreateBrandRequest(RequestModel):

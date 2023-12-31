@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import asdict
 from typing import Type
+from uuid import UUID
 
 from pydantic import BaseModel
 
@@ -14,8 +15,8 @@ class ResponseModel(ABC, BaseModel):
 
 class RequestModel(ABC, BaseModel):
 
-    def deserialize(self):
-        return self.core_model(**self.model_dump())
+    def deserialize(self, user_id: UUID | None = None):
+        return self.core_model(**(self.model_dump() | ({'user_id': user_id} if user_id is not None else {})))
 
     @property
     @abstractmethod

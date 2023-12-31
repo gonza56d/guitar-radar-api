@@ -32,6 +32,7 @@ def get_branded_component_columns() -> list[Column]:
         Column('brand_id', UUID(as_uuid=True), ForeignKey('brands.id', ondelete='CASCADE'), nullable=False),
         get_name_column(),
         Column('year_of_introduction', Integer, nullable=True),
+        Column('user_id', UUID(as_uuid=True), ForeignKey('users.id', ondelete='CASCADE'), nullable=False),
     ]
 
 
@@ -40,7 +41,8 @@ brand_table = Table(
     mapper_registry.metadata,
     get_id_column(),
     get_name_column(),
-    Column('founded_in', Integer, nullable=True)
+    Column('founded_in', Integer, nullable=True),
+    Column('user_id', UUID(as_uuid=True), ForeignKey('users.id', ondelete='CASCADE'), nullable=False),
 )
 
 
@@ -57,7 +59,8 @@ color_table = Table(
             name='bridge_type',
             create_type=False
         )
-    )
+    ),
+    Column('user_id', UUID(as_uuid=True), ForeignKey('users.id', ondelete='CASCADE'), nullable=False),
 )
 
 
@@ -65,7 +68,6 @@ bridge_table = Table(
     'bridges',
     mapper_registry.metadata,
     *get_branded_component_columns(),
-
 )
 
 bridge_color_table = Table(

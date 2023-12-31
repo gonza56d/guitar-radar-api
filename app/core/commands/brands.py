@@ -1,9 +1,11 @@
 from dataclasses import dataclass
 from uuid import UUID
 
+from app.core.commands.base import CreateCommand
+
 
 @dataclass
-class CreateBrandCommand:
+class CreateBrandCommand(CreateCommand):
 
     name: str
     founded_in: int | None = None
