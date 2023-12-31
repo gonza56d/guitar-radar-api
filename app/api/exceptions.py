@@ -4,7 +4,7 @@ from http import HTTPStatus
 from app.core.exceptions import AlreadyExistsException, NotFoundException, UnauthorizedException, BusinessException
 
 
-class APIException(ABC, BusinessException):
+class APIException(BusinessException, ABC):
 
     @property
     @abstractmethod
