@@ -1,11 +1,14 @@
 from datetime import date
-from uuid import uuid4
+from uuid import UUID
+
+import jwt
 
 from app.api.orm.mappings import auth_table, users_table
 from app.core.commands.auth import CreateAuthCommand
 from app.core.commands.users import CreateUserCommand
 from app.core.models.auth import Auth
 from app.core.models.users import User
+from app.env import Env
 from tests.base import APITest
 from tests.utils.hashing import hash_password
 from tests.utils.sql import SQLUtils
@@ -50,3 +53,6 @@ class TestAuth(APITest):
         )
 
         assert response.status_code == 201
+        jwt_token = response.json()['access_token']
+        decoded_token = jwt.decode(jwt_token, Env.CACHE_SESSION_SECRET_KEY, algorithms=['HS256'])
+        assert UUID(decoded_token['user_id']) == user.id

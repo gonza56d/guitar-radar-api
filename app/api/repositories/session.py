@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime, timedelta
+from time import time
 from typing import Any
 from uuid import UUID
 
@@ -34,6 +35,7 @@ class SessionTokenRedisRepository(SessionRepository, RedisRepository):
     def _build_jwt_token(self, user_id: UUID) -> str:
         jwt_token_payload = {
             'user_id': str(user_id),
-            'exp': (datetime.utcnow() + timedelta(minutes=self.token_expiration_minutes)).isoformat()
+            'exp': int(time()) + self.token_expiration_minutes * 60,
+            'exp_datetime_utc': (datetime.utcnow() + timedelta(minutes=self.token_expiration_minutes)).isoformat()
         }
         return jwt.encode(jwt_token_payload, self.secret_key, algorithm='HS256')
