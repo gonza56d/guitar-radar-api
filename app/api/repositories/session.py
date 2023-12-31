@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import datetime, timedelta
 from typing import Any
 from uuid import UUID
@@ -8,8 +9,10 @@ from app.api.repositories.base import RedisRepository
 from app.core.repositories.session import SessionRepository
 
 
+@dataclass
 class SessionTokenRedisRepository(SessionRepository, RedisRepository):
 
+    secret_key: str
     token_expiration_minutes: int
 
     def set_user_session(self, user_id: UUID) -> str:

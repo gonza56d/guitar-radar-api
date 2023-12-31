@@ -91,6 +91,7 @@ class SQLRepository(ABC):
                 commit=True,
                 returning=object if not isinstance(returning_class, list) else list
             )
+            breakpoint()
         except IntegrityError as err:
             msg = err.args[0]
             key, value, _ = msg.split('Key ')[1].replace('(', '').replace('=', '').split(')')

@@ -36,6 +36,8 @@ class Container(DeclarativeContainer):
         'app.api.routers.components.bridges',
         'app.api.repositories.base',
         'app.api.repositories.bridges',
+        # testing
+        'tests.utils.sql'
     ])
     Configuration()
 
