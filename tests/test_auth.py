@@ -7,6 +7,7 @@ from app.core.commands.users import CreateUserCommand
 from app.core.models.auth import Auth
 from app.core.models.users import User
 from tests.base import APITest
+from tests.utils.hashing import hash_password
 from tests.utils.sql import SQLUtils
 
 
@@ -35,7 +36,7 @@ class TestAuth(APITest):
         self.auth_sql_utils._insert(
             CreateAuthCommand(
                 user_id=user.id,
-                password=self.password
+                password=hash_password(self.password)
             ),
             Auth
         )
@@ -47,4 +48,5 @@ class TestAuth(APITest):
                 'password': self.password
             }
         )
-        breakpoint()
+
+        assert response.status_code == 201

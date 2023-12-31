@@ -24,4 +24,5 @@ class AuthenticateHandler:
         if not self.auth_repository.is_password_valid(command.password, auth.password):
             raise UnauthorizedException()
 
-        return self.session_repository.set_user_session(user.id)
+        session_token = self.session_repository.set_user_session(user.id)
+        return AuthToken(access_token=session_token)

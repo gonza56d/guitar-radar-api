@@ -5,7 +5,7 @@ up:
 	docker compose up
 
 dependencies:
-	docker compose up -d postgres mongo
+	docker compose up -d postgres mongo redis
 
 down:
 	docker compose down

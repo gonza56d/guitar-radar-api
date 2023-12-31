@@ -20,4 +20,3 @@ class AuthRequest(RequestModel):
 class AuthResponse(ResponseModel):
 
     access_token: str
-    expiration: datetime

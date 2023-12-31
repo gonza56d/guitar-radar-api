@@ -29,7 +29,7 @@ def get_name_column():
 def get_branded_component_columns() -> list[Column]:
     return [
         get_id_column(),
-        Column('brand_id', UUID(as_uuid=True), ForeignKey('brands.id')),
+        Column('brand_id', UUID(as_uuid=True), ForeignKey('brands.id', ondelete='CASCADE'), nullable=False),
         get_name_column(),
         Column('year_of_introduction', Integer, nullable=True),
     ]
@@ -71,8 +71,8 @@ bridge_table = Table(
 bridge_color_table = Table(
     'bridges_colors',
     mapper_registry.metadata,
-    Column('color_id', ForeignKey('colors.id'), primary_key=True),
-    Column('bridge_id', ForeignKey('bridges.id'), primary_key=True),
+    Column('color_id', ForeignKey('colors.id', ondelete='CASCADE'), primary_key=True),
+    Column('bridge_id', ForeignKey('bridges.id', ondelete='CASCADE'), primary_key=True),
 )
 
 
@@ -91,7 +91,7 @@ auth_table = Table(
     'auth',
     mapper_registry.metadata,
     get_id_column(),
-    Column('user_id', UUID(as_uuid=True), ForeignKey('users.id'), nullable=False),
+    Column('user_id', UUID(as_uuid=True), ForeignKey('users.id', ondelete='CASCADE'), nullable=False),
     Column('password', String, nullable=False)
 )
 

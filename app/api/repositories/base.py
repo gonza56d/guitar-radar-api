@@ -91,7 +91,6 @@ class SQLRepository(ABC):
                 commit=True,
                 returning=object if not isinstance(returning_class, list) else list
             )
-            breakpoint()
         except IntegrityError as err:
             msg = err.args[0]
             key, value, _ = msg.split('Key ')[1].replace('(', '').replace('=', '').split(')')
@@ -128,10 +127,10 @@ class MongoRepository(ABC):
         return self.client[self.database_name]
 
 
+@dataclass
 class RedisRepository(ABC):
 
-    def __init__(self, client: Redis):
-        self._client: Redis = client
+    _client: Redis
 
     def get(self, key: str) -> str | dict:
         return self._client.get(self._get_key(key))

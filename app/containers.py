@@ -31,6 +31,7 @@ from app.core.repositories.health import HealthRepository
 class Container(DeclarativeContainer):
 
     wiring_config = WiringConfiguration(modules=[
+        'app.api.routers.auth',
         'app.api.routers.brands',
         'app.api.routers.health',
         'app.api.routers.components.bridges',
@@ -86,6 +87,7 @@ class Container(DeclarativeContainer):
 
     session_repository: Factory[SessionRepository] = Factory(
         SessionTokenRedisRepository,
+        _client=redis_client,
         secret_key=Env.CACHE_SESSION_SECRET_KEY,
         token_expiration_minutes=Env.CACHE_TOKEN_EXPIRATION_MINUTES
     )

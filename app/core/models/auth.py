@@ -15,4 +15,3 @@ class Auth:
 class AuthToken:
 
     access_token: str
-    expiration: datetime
